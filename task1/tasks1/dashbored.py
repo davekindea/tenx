@@ -93,3 +93,30 @@ fig = pe.line(
 st.plotly_chart(fig)
 
 # Numeric data for heatmap
+st.subheader("Correlation Heatmap")
+data_numeric = data.select_dtypes(include=['float64', 'int64']).fillna(0)
+if not data_numeric.empty:
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(data_numeric, annot=True, cmap='coolwarm', linewidths=0.5)
+    st.pyplot(plt)
+else:
+    st.write("**No numeric data available for heatmap**")
+
+# Polar Plot (Ensure these columns exist in the dataset)
+st.subheader("Wind Polar Plot")
+if 'wind_speed' in data.columns and 'wind_direction' in data.columns:
+    fig = pe.scatter_polar(
+        data,
+        r="wind_speed",
+        theta="wind_direction",
+        color="wind_speed",
+        size="wind_speed",
+        color_continuous_scale=pe.colors.sequential.Viridis,
+        title="Wind Polar Plot"
+    )
+    st.plotly_chart(fig)
+else:
+    st.write("**Wind speed or wind direction data not available for polar plot**")
+
+# Histogram
+
