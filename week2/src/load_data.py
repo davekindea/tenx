@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 from urllib.parse import quote_plus
 
 
+
 # Load environment variables from .env file
 load_dotenv()
 
@@ -79,3 +80,41 @@ def load_data_using_sqlalchemy(query):
         print(f"An error occurred: {e}")
         print("hello daw")
         return None
+import psycopg2
+
+def insert_data_into_db(data):
+    try:
+       
+        connection = psycopg2.connect(
+            host=DB_HOST,
+            port=DB_PORT,
+            database=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD
+        )
+        
+     
+        cursor = connection.cursor()
+        
+       
+        for index, row in data.iterrows():
+            insert_query = '''
+            INSERT INTO task_4 (user_id, engagement_score, experience_score, satisfaction_score)
+            VALUES (%s, %s, %s, %s)
+            '''
+            
+            cursor.execute(insert_query, (row["MSISDN/Number"], row['engagement_scores'], row['experience_scores'], row['satisfaction_score']))
+        
+      
+        connection.commit()
+        print("Data exported successfully!")
+    
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    
+    finally:
+       
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
