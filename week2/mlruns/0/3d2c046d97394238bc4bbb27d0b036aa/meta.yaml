@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/user/OneDrive/Desktop/see/tenx/week2/mlruns/0/3d2c046d97394238bc4bbb27d0b036aa/artifacts
+end_time: 1725914573218
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 3d2c046d97394238bc4bbb27d0b036aa
+run_name: gentle-mole-750
+run_uuid: 3d2c046d97394238bc4bbb27d0b036aa
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1725914514334
+status: 3
+tags: []
+user_id: user
