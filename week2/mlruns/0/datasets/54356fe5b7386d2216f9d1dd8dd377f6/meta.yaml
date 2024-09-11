@@ -1,0 +1,9 @@
+digest: 8db705c6
+name: dataset
+profile: '{"num_rows": 80142, "num_elements": 240426}'
+schema: '{"mlflow_colspec": [{"type": "long", "name": "sessions_frequency", "required":
+  true}, {"type": "double", "name": "total_session_duration", "required": true}, {"type":
+  "double", "name": "total_traffic", "required": true}]}'
+source: '{"tags": {"mlflow.user": "user", "mlflow.source.name": "week2.py", "mlflow.source.type":
+  "LOCAL", "mlflow.source.git.commit": "935cd20ac04804e53ece2a42d71212c6335af738"}}'
+source_type: code
