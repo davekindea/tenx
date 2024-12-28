@@ -12,112 +12,93 @@ data1 = pd.read_csv("./data/benin-malanville.csv")
 data2 = pd.read_csv("./data/sierraleone-bumbuna.csv")
 data3 = pd.read_csv("./data/togo-dapaong_qc.csv")
 
-# Sidebar for dataset selection
-st.sidebar.header("Dataset Selection")
-dataset_option = st.sidebar.selectbox(
-    "Select Dataset:",
-    ["Benin", "Sierra Leone", "Togo"]
-)
+# Combine datasets into a dictionary
+datasets = {
+    "Benin": data1,
+    "Sierra Leone": data2,
+    "Togo": data3
+}
 
-# Select dataset based on user input
-if dataset_option == "Benin":
-    data = data1
-elif dataset_option == "Sierra Leone":
-    data = data2
-elif dataset_option == "Togo":
-    data = data3
-
-# Convert the 'Timestamp' column to datetime format
-data['Timestamp'] = pd.to_datetime(data['Timestamp'],errors='coerce')
-
-# Extract the date part from the timestamp
-data['Date'] = data['Timestamp'].dt.date
-
-# Display the data
 st.title("Solar Data Analysis")
-st.header("Raw Data")
-st.dataframe(data)
 
-# Sidebar for date filtering
-st.sidebar.header("Date Filtering")
-dates = st.sidebar.multiselect(
-    "Select Date:", 
-    options=sorted(data['Date'].unique()),  # Sort the dates for better UX
-    default=sorted(data['Date'].unique())
-)
+for name, data in datasets.items():
+    st.header(f"{name} Dataset")
+    
+    # Convert the 'Timestamp' column to datetime format
+    data['Timestamp'] = pd.to_datetime(data['Timestamp'], errors='coerce')
+    
+    # Extract the date part from the timestamp
+    data['Date'] = data['Timestamp'].dt.date
+    
+    # Display Raw Data
+    st.subheader("Raw Data")
+    st.dataframe(data)
+    
+    # Dataset Information
+    st.subheader("Dataset Head")
+    st.write(data.head())
+    
+    st.subheader("Dataset Dimensions")
+    num_rows, num_cols = data.shape
+    st.write(f"**Number of Rows:** {num_rows}")
+    st.write(f"**Number of Columns:** {num_cols}")
+    
+    st.subheader("Dataset Description")
+    st.write(data.describe())
+    
+    st.subheader("Missing Values in Dataset")
+    st.write(data.isnull().sum())
+    
+    # Box plot to visualize outliers
+    st.subheader("Box Plot of 'Global Horizontal Irradiance'")
+    if 'GHI' in data.columns:
+        fig, ax = plt.subplots()
+        sns.boxplot(x=data['GHI'], ax=ax)
+        st.pyplot(fig)
+    else:
+        st.write("**'GHI' column not available for box plot.**")
+    
+    # Time Series Plot
+    if 'Timestamp' in data.columns and 'GHI' in data.columns:
+        st.subheader("GHI Time Series Plot")
+        fig = pe.line(
+            data, 
+            x='Timestamp', 
+            y='GHI', 
+            title=f'{name} - GHI Time Series',
+            labels={'Timestamp': 'Time', 'GHI': 'GHI (W/m²)'}
+        )
+        st.plotly_chart(fig)
+    else:
+        st.write("**Timestamp or GHI column not available for time series plot.**")
+    
+    # Correlation Heatmap
+    st.subheader("Correlation Heatmap")
+    data_numeric = data.select_dtypes(include=['float64', 'int64']).fillna(0)
+    if not data_numeric.empty:
+        corr = data_numeric.corr()
+        plt.figure(figsize=(10, 8))
+        sns.heatmap(corr, annot=True, cmap='coolwarm', linewidths=0.5)
+        st.pyplot(plt)
+    else:
+        st.write("**No numeric data available for heatmap.**")
+    
+    # Polar Plot
+    st.subheader("Wind Polar Plot")
+    if 'wind_speed' in data.columns and 'wind_direction' in data.columns:
+        fig = pe.scatter_polar(
+            data,
+            r="wind_speed",
+            theta="wind_direction",
+            color="wind_speed",
+            size="wind_speed",
+            color_continuous_scale=pe.colors.sequential.Viridis,
+            title=f"{name} - Wind Polar Plot"
+        )
+        st.plotly_chart(fig)
+    else:
+        st.write("**Wind speed or wind direction data not available for polar plot.**")
+    
+    st.write("---")
 
-# Filter data based on selected dates
-if dates:
-    data_selection = data[data['Date'].isin(dates)]
-else:
-    data_selection = data
-
-# Display the filtered data
-st.header("Filtered Data")
-st.dataframe(data_selection)
-
-# Dataset Information
-st.subheader("Dataset Head")
-st.write(data.head(10))
-
-st.subheader("Dataset Dimensions")
-num_rows, num_cols = data.shape
-st.write(f"**Number of Rows:** {num_rows}")
-st.write(f"**Number of Columns:** {num_cols}")
-
-st.subheader("Dataset Description")
-st.write(data.describe())
-
-st.subheader("Missing Values in Dataset")
-st.write(data.isnull().sum())
-
-# Box plot to visualize outliers
-st.header("Outlier Visualization")
-st.subheader("Box Plot of 'Global Horizontal Irradiance':")
-fig, ax = plt.subplots()
-sns.boxplot(x=data_selection['GHI'], ax=ax)
-st.pyplot(fig)
-
-# Time Series Plot
-st.subheader("GHI Time Series Plot")
-fig = pe.line(
-    data_selection, 
-    x='Timestamp', 
-    y='GHI', 
-    title='GHI Time Series',
-    labels={
-        'Timestamp': 'Time',
-        'GHI': 'GHI (W/m²)'
-    }
-)
-st.plotly_chart(fig)
-st.subheader("Correlation Heatmap")
-data_numeric = data.select_dtypes(include=['float64', 'int64']).fillna(0)
-if not data_numeric.empty:
-
-    corr = data_numeric.corr()
-   
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(corr, annot=True, cmap='coolwarm', linewidths=0.5)
-    st.pyplot(plt)
-else:
-    st.write("**No numeric data available for heatmap**")
-
-# Polar Plot (Ensure these columns exist in the dataset)
-st.subheader("Wind Polar Plot")
-if 'wind_speed' in data.columns and 'wind_direction' in data.columns:
-    fig = pe.scatter_polar(
-        data,
-        r="wind_speed",
-        theta="wind_direction",
-        color="wind_speed",
-        size="wind_speed",
-        color_continuous_scale=pe.colors.sequential.Viridis,
-        title="Wind Polar Plot"
-    )
-    st.plotly_chart(fig)
-else:
-    st.write("**Wind speed or wind direction data not available for polar plot**")
-
-# Histogram
-
+st.write("### End of Solar Data Analysis")
