@@ -100,3 +100,6 @@ Below are the key attributes:
 1. **Github repository:**  
    ```bash
    https://github.com/davekindea/tenx.git
+## 🚀 **Live Dashboard**  
+Explore the **interactive dashboard** for real-time insights and visualizations here:  
+👉 [View Live Dashboard](https://your-dashboard-link)
