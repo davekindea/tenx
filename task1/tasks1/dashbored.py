@@ -143,8 +143,8 @@ st.subheader("Correlation Heatmap")
 data_numeric = data.select_dtypes(include=['float64', 'int64']).fillna(0)
 if not data_numeric.empty:
     corr = data_numeric.corr()
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(corr, annot=True, cmap='coolwarm', linewidths=0.5)
+    plt.figure(figsize=(15, 8))
+    sns.heatmap(corr, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5)
     st.pyplot(plt)
 else:
     st.write("**No numeric data available for heatmap.**")
