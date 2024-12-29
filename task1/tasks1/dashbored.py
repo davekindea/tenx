@@ -5,14 +5,20 @@ import matplotlib.pyplot as plt
 import plotly.express as pe
 from scipy.stats import zscore
 import numpy as np
+import os
 
+# Build the file path dynamically
+current_dir = os.path.dirname(os.path.abspath(__file__))
+data_path = os.path.join(current_dir, "./data/benin-malanville.csv")
+data_path_data2=os.path.join(current_dir, "./data/sierraleone-bumbuna.csv")
+data_path_data3=os.path.join(current_dir, "./data/togo-dapaong_qc.csv")
 # Set up Streamlit page
 st.set_page_config(page_title="Solar Data", page_icon=":bar_chart:", layout="wide")
 
 # Load data
-data1 = pd.read_csv("./data/benin-malanville.csv")
-data2 = pd.read_csv("./data/sierraleone-bumbuna.csv")
-data3 = pd.read_csv("./data/togo-dapaong_qc.csv")
+data1 = pd.read_csv(data_path)
+data2 = pd.read_csv(data_path_data2)
+data3 = pd.read_csv(data_path_data3)
 
 # Combine datasets into a dictionary
 datasets = {
