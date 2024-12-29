@@ -102,4 +102,4 @@ Below are the key attributes:
    https://github.com/davekindea/tenx.git
 ## 🚀 **Live Dashboard**  
 Explore the **interactive dashboard** for real-time insights and visualizations here:  
-👉 [View Live Dashboard](https://your-dashboard-link)
+👉 [View Live Dashboard](https://solarsyst.streamlit.app/)
